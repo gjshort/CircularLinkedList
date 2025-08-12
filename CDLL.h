@@ -30,6 +30,7 @@ int getSize(struct Node** headPtr, struct Node** tailPtr) {
     if (*headPtr == NULL) {
         return 0;
     }
+    // Count nodes from head until you return to head
     else {
         struct Node* curr = *headPtr;
         int count = 0;
@@ -48,6 +49,7 @@ int getSize(struct Node** headPtr, struct Node** tailPtr) {
 * double pointers to the head and tail.
 */
 void addToFront(int newVal, struct Node** headPtr, struct Node** tailPtr) {
+    // If empty list, create first node.
     if (*headPtr == NULL) {
         struct Node* nextNode = *headPtr;
         *headPtr = (struct Node*)(malloc(sizeof(struct Node)));
@@ -55,11 +57,13 @@ void addToFront(int newVal, struct Node** headPtr, struct Node** tailPtr) {
             printf("Could not allocate for new node\n");
             exit(EXIT_FAILURE);
         }
+        // Head and tail are both the only node. It points in both directions to itself
         *tailPtr = *headPtr;
-        (*headPtr)->value = newVal;
+        (*headPtr)->value = newVal; 
         (*headPtr)->last = *tailPtr;
         (*tailPtr)->next = *headPtr;
     }
+    // If non-empty list
     else {
         struct Node* nextNode = *headPtr;
         *headPtr = (struct Node*)(malloc(sizeof(struct Node)));
@@ -67,6 +71,7 @@ void addToFront(int newVal, struct Node** headPtr, struct Node** tailPtr) {
             printf("Could not allocate for new node\n");
             exit(EXIT_FAILURE);
         }
+        // Insert at front of list (new head), update pointers of next node and tail
         (*headPtr)->value = newVal;
         (*headPtr)->next = nextNode;
         (*headPtr)->last = *tailPtr;
@@ -82,6 +87,7 @@ void addToFront(int newVal, struct Node** headPtr, struct Node** tailPtr) {
 * double pointers to the head and tail.
 */
 void addToEnd(int newVal, struct Node** headPtr, struct Node** tailPtr) {
+    // If empty list, create first node.
     if (*headPtr == NULL) {
         struct Node* nextNode = *headPtr;
         *headPtr = (struct Node*)(malloc(sizeof(struct Node)));
@@ -89,11 +95,13 @@ void addToEnd(int newVal, struct Node** headPtr, struct Node** tailPtr) {
             printf("Could not allocate for new node\n");
             exit(EXIT_FAILURE);
         }
+        // Head and tail are both the only node. It points in both directions to itself
         *tailPtr = *headPtr;
         (*headPtr)->value = newVal;
         (*headPtr)->last = *tailPtr;
         (*tailPtr)->next = *headPtr;
     }
+    // If non-empty list
     else {
         struct Node* lastNode = *tailPtr;
         *tailPtr = (struct Node*)(malloc(sizeof(struct Node)));
@@ -101,6 +109,7 @@ void addToEnd(int newVal, struct Node** headPtr, struct Node** tailPtr) {
             printf("Could not allocate for new node\n");
             exit(EXIT_FAILURE);
         }
+        // Insert at end of list (new tail), update pointers of next node and head
         (*tailPtr)->value = newVal;
         (*tailPtr)->last = lastNode;
         (*tailPtr)->next = *headPtr;
@@ -125,6 +134,7 @@ void insert(int slot, int newVal, struct Node** headPtr, struct Node** tailPtr) 
     else {
         struct Node* curr = *headPtr;
         int position = 1;
+        // Walk through list to specified slot
         while (position < slot) {
             curr = curr->next;
             position++;
@@ -134,6 +144,7 @@ void insert(int slot, int newVal, struct Node** headPtr, struct Node** tailPtr) 
             printf("Could not allocate for new node\n");
             exit(EXIT_FAILURE);
         }
+        // Insert new node and update adjacent pointers
         newNode->value = newVal;
         newNode->last = curr->last;
         newNode->next = curr;
@@ -157,6 +168,7 @@ void removeFirst(struct Node** headPtr, struct Node** tailPtr) {
         *tailPtr = NULL;
     }
     else {
+        // Next node becomes head
         struct Node* temp = *headPtr;
         *headPtr = (*headPtr)->next;
         (*headPtr)->last = *tailPtr;
@@ -181,6 +193,7 @@ void removeLast(struct Node** headPtr, struct Node** tailPtr) {
         *tailPtr = NULL;
     }
     else {
+        // Second to last node becomes tail
         struct Node* temp = *tailPtr;
         *tailPtr = (*tailPtr)->last;
         (*tailPtr)->next = *headPtr;
@@ -208,10 +221,12 @@ void removeSlot(int slot, struct Node** headPtr, struct Node** tailPtr) {
     else {
         struct Node* curr = *headPtr;
         int position = 1;
+        // Walk through list to specified slot
         while (position < slot) {
             curr = curr->next;
             position++;
         }
+        // Remove all pointers to node and deallocate it
         curr->last->next = curr->next;
         curr->next->last = curr->last;
         free(curr);
@@ -234,6 +249,7 @@ bool removeValue(int target, struct Node** headPtr, struct Node** tailPtr) {
     else {
         struct Node* curr = *headPtr;
         int position = 1;
+        // Walk list until remove found value or reached end of list
         do {
             if (curr->value == target) {
                 removeSlot(position, headPtr, tailPtr);
@@ -258,6 +274,7 @@ void printList(struct Node** headPtr) {
     else {
         printf("-------------\n");
         struct Node* curr = *headPtr;
+        // Walk list and print node values
         do {
             printf("%d\n", curr->value);
             curr = curr->next;
@@ -275,8 +292,9 @@ void destroyList(struct Node** headPtr, struct Node** tailPtr) {
         printf("Can't destroy empty list\n");
     }
     else {
-        (*tailPtr)->next = NULL;
+        (*tailPtr)->next = NULL; // Detach tail's next from head
         struct Node* curr;
+        // Walk list by make next node new head and removing current head
         while (*headPtr != NULL) {
             curr = *headPtr;
             *headPtr = (*headPtr)->next;
