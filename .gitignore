@@ -1,0 +1,7 @@
+# Ignore config files and executables
+x64
+.vs
+CircularLinkedList.sln
+CircularLinkedList.vcxproj
+CircularLinkedList.vcxproj.filters
+CircularLinkedList.vcxproj.user
